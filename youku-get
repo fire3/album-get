@@ -26,8 +26,8 @@ download_episode() {
 
 
    echo "Downloading into Dir $EPISODE_NAME"
-   mkdir $EPISODE_NAME
-   cd $EPISODE_NAME
+   mkdir "$EPISODE_NAME"
+   cd "$EPISODE_NAME"
 
    for SHOW in $SHOW_URLS
    do
