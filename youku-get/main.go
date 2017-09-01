@@ -28,9 +28,12 @@ func main() {
 
     var showid = flag.Int("i",0,"showid for show in youku")
     var dir = flag.String("d","./","dir to download")
-    
-    flag.Parse()
 
+    flag.Parse()
+    if len(os.Args) == 1 {
+        flag.Usage()
+        os.Exit(1)
+    }
     if flag.NArg() != 0 {
         flag.Usage()
         os.Exit(1)
@@ -43,7 +46,7 @@ func main() {
         url := fmt.Sprintf("http://list.youku.com/show/episode?id=%d&stage=reload_%d&callback=html",*showid,i)
         
         resp, err := http.Get(url)
-        fmt.Printf("%s\n",url)
+        //fmt.Printf("%s\n",url)
 
         if err != nil {
             fmt.Fprintf(os.Stderr, "fetch: %v\n",err)
@@ -69,14 +72,18 @@ func main() {
 
 		json.Unmarshal([]byte(n),&sd)
 
+
         if sd.Error == 1 {
             break
         }
 
-        re = regexp.MustCompile("v.youku.com/v_show/id_\\w+==.html")
+        re = regexp.MustCompile("v.youku.com/v_show/id_\\w+=*=*.html")
         urls := re.FindAllString(sd.HTML,-1)
 
+        //fmt.Println(urls)
+
         if len(urls)<=0 {
+            fmt.Printf("Found no url for downloading..\n")
             break
         }
 
